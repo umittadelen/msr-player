@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Albums - MSR Player</title>
+		<link rel="stylesheet" href="style.css" />
+        <link rel="shortcut icon" type="image/x-icon" href="./images/favicon.ico">
+		<style>
+			.list-page {
+				max-width: 900px;
+				margin: 0 auto;
+				padding: 32px 20px 60px;
+			}
+
+			.list-header {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				margin-bottom: 32px;
+				gap: 16px;
+			}
+
+			.list-header h1 {
+				font-size: 2rem;
+				font-weight: 600;
+			}
+
+			.search-box {
+				flex: 1;
+				max-width: 400px;
+				padding: 10px 14px;
+				border-radius: 8px;
+				background: #1f1f1f;
+				border: 1px solid #2a2a2a;
+				color: #f7f7f7;
+				font-size: 0.95rem;
+			}
+
+			.search-box::placeholder {
+				color: #7a7a7a;
+			}
+
+			.songs-grid,
+			.albums-grid {
+				display: grid;
+				gap: 12px;
+			}
+
+			.song-card,
+			.album-card {
+				display: flex;
+				align-items: center;
+				gap: 16px;
+				padding: 12px;
+				background: #1a1a1a;
+				border: 1px solid #2a2a2a;
+				border-radius: 12px;
+				text-decoration: none;
+				color: #f7f7f7;
+				transition: background 0.2s;
+				cursor: pointer;
+			}
+
+			.song-card:hover,
+			.album-card:hover {
+				background: #222;
+			}
+
+			.song-cover,
+			.album-cover {
+				width: 64px;
+				height: 64px;
+				min-width: 64px;
+				border-radius: 8px;
+				object-fit: cover;
+				background: #0a0a0a;
+			}
+
+			.album-meta {
+				color: #bdbdbd;
+				font-size: 0.9rem;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+
+			.back-button {
+				background: #1f1f1f;
+				color: #f7f7f7;
+				border: 1px solid #2a2a2a;
+				padding: 8px 14px;
+				border-radius: 999px;
+				cursor: pointer;
+			}
+
+			.back-button:hover {
+				background: #2a2a2a;
+			}
+
+			.hidden {
+				display: none;
+			}
+
+			.song-number {
+				color: #7a7a7a;
+				font-size: 0.9rem;
+				min-width: 32px;
+				text-align: center;
+			}
+
+			.song-info {
+				flex: 1;
+				min-width: 0;
+				display: grid;
+				gap: 4px;
+			}
+
+			.song-name {
+				font-weight: 500;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+
+			.song-artist {
+				color: #bdbdbd;
+				font-size: 0.9rem;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+
+			.no-results {
+				text-align: center;
+				color: #7a7a7a;
+				padding: 48px 20px;
+			}
+
+			.loading {
+				text-align: center;
+				color: #7a7a7a;
+				padding: 32px 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="list-page">
+			<div class="list-header">
+				<h1 id="pageTitle">Albums</h1>
+				<button id="backButton" class="back-button hidden" type="button">
+					Back to albums
+				</button>
+				<input
+					type="text"
+					id="searchInput"
+					class="search-box"
+					placeholder="Search albums..."
+					aria-label="Search albums"
+				/>
+			</div>
+
+			<div id="loadingState" class="loading">Loading albums...</div>
+			<div id="albumGrid" class="albums-grid" style="display: none"></div>
+			<div id="albumDetail" class="hidden">
+				<div id="albumInfo" class="album-card" style="cursor: default"></div>
+				<div id="songGrid" class="songs-grid" style="margin-top: 16px"></div>
+			</div>
+			<div id="noResults" class="no-results" style="display: none">
+				No albums found
+			</div>
+		</div>
+
+		<script src="list-script.js"></script>
+	</body>
+</html>
