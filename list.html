@@ -1,176 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Albums - MSR Player</title>
-		<link rel="stylesheet" href="style.css" />
-        <link rel="shortcut icon" type="image/x-icon" href="./images/favicon.ico">
-		<style>
-			.list-page {
-				max-width: 900px;
-				margin: 0 auto;
-				padding: 32px 20px 60px;
-			}
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>MSR Player</title>
+	<link rel="stylesheet" href="style.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="https://web.hycdn.cn/siren/site/favicon.ico">
+</head>
+<body>
+	<div class="app">
+		<!-- Header -->
+		<header class="header">
+			<a href="index.html" class="back-btn" aria-label="Back to library">
+				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<path d="M19 12H5M12 19l-7-7 7-7"/>
+				</svg>
+			</a>
+			<h1 class="header-title">Now Playing</h1>
+			<div class="header-spacer"></div>
+		</header>
 
-			.list-header {
-				display: flex;
-				align-items: center;
-				justify-content: space-between;
-				margin-bottom: 32px;
-				gap: 16px;
-			}
+		<!-- Main Player -->
+		<main class="player-container">
+			<!-- Album Art / Vinyl -->
+			<div class="artwork-section">
+				<div class="vinyl-wrap" aria-hidden="true">
+					<div class="vinyl-tilt">
+						<div class="vinyl-stack">
+							<img class="vinyl" src="images/vinyl.png" alt="" />
+							<img class="logo" src="" alt="" />
+						</div>
+					</div>
+				</div>
+			</div>
 
-			.list-header h1 {
-				font-size: 2rem;
-				font-weight: 600;
-			}
+			<!-- Song Info -->
+			<div class="song-info">
+				<h2 class="title">Select a song</h2>
+				<p class="subtitle">Browse the library to play music</p>
+			</div>
+		</main>
 
-			.search-box {
-				flex: 1;
-				max-width: 400px;
-				padding: 10px 14px;
-				border-radius: 8px;
-				background: #1f1f1f;
-				border: 1px solid #2a2a2a;
-				color: #f7f7f7;
-				font-size: 0.95rem;
-			}
+		<!-- Controls Section (always visible) -->
+		<div class="controls-section">
+			<!-- Progress Bar -->
+			<div class="progress-section">
+				<div class="progress-bar">
+					<div class="progress-fill" id="progressFill"></div>
+					<input type="range" id="progressSlider" class="progress-slider" min="0" max="100" value="0" />
+				</div>
+				<div class="time-display">
+					<span id="currentTime">0:00</span>
+					<span id="totalTime">0:00</span>
+				</div>
+			</div>
 
-			.search-box::placeholder {
-				color: #7a7a7a;
-			}
-
-			.songs-grid,
-			.albums-grid {
-				display: grid;
-				gap: 12px;
-			}
-
-			.song-card,
-			.album-card {
-				display: flex;
-				align-items: center;
-				gap: 16px;
-				padding: 12px;
-				background: #1a1a1a;
-				border: 1px solid #2a2a2a;
-				border-radius: 12px;
-				text-decoration: none;
-				color: #f7f7f7;
-				transition: background 0.2s;
-				cursor: pointer;
-			}
-
-			.song-card:hover,
-			.album-card:hover {
-				background: #222;
-			}
-
-			.song-cover,
-			.album-cover {
-				width: 64px;
-				height: 64px;
-				min-width: 64px;
-				border-radius: 8px;
-				object-fit: cover;
-				background: #0a0a0a;
-			}
-
-			.album-meta {
-				color: #bdbdbd;
-				font-size: 0.9rem;
-				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
-			}
-
-			.back-button {
-				background: #1f1f1f;
-				color: #f7f7f7;
-				border: 1px solid #2a2a2a;
-				padding: 8px 14px;
-				border-radius: 999px;
-				cursor: pointer;
-			}
-
-			.back-button:hover {
-				background: #2a2a2a;
-			}
-
-			.hidden {
-				display: none;
-			}
-
-			.song-number {
-				color: #7a7a7a;
-				font-size: 0.9rem;
-				min-width: 32px;
-				text-align: center;
-			}
-
-			.song-info {
-				flex: 1;
-				min-width: 0;
-				display: grid;
-				gap: 4px;
-			}
-
-			.song-name {
-				font-weight: 500;
-				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
-			}
-
-			.song-artist {
-				color: #bdbdbd;
-				font-size: 0.9rem;
-				white-space: nowrap;
-				overflow: hidden;
-				text-overflow: ellipsis;
-			}
-
-			.no-results {
-				text-align: center;
-				color: #7a7a7a;
-				padding: 48px 20px;
-			}
-
-			.loading {
-				text-align: center;
-				color: #7a7a7a;
-				padding: 32px 20px;
-			}
-		</style>
-	</head>
-	<body>
-		<div class="list-page">
-			<div class="list-header">
-				<h1 id="pageTitle">Albums</h1>
-				<button id="backButton" class="back-button hidden" type="button">
-					Back to albums
+			<!-- Controls -->
+			<div class="controls">
+				<div class="volume-control">
+					<svg class="volume-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+						<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+					</svg>
+					<input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="70" />
+				</div>
+				
+				<button id="playPauseBtn" class="play-btn" type="button" aria-label="Play">
+					<svg class="play-icon" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+						<path d="M8 5v14l11-7z"/>
+					</svg>
+					<svg class="pause-icon" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+						<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+					</svg>
 				</button>
-				<input
-					type="text"
-					id="searchInput"
-					class="search-box"
-					placeholder="Search albums..."
-					aria-label="Search albums"
-				/>
-			</div>
 
-			<div id="loadingState" class="loading">Loading albums...</div>
-			<div id="albumGrid" class="albums-grid" style="display: none"></div>
-			<div id="albumDetail" class="hidden">
-				<div id="albumInfo" class="album-card" style="cursor: default"></div>
-				<div id="songGrid" class="songs-grid" style="margin-top: 16px"></div>
-			</div>
-			<div id="noResults" class="no-results" style="display: none">
-				No albums found
+				<div class="spacer"></div>
 			</div>
 		</div>
 
-		<script src="list-script.js"></script>
-	</body>
+		<!-- Lyrics Panel -->
+		<aside class="lyrics-panel">
+			<div class="lyrics-header">
+				<h3>Lyrics</h3>
+			</div>
+			<ul id="lyricsList" class="lyrics-list" aria-live="polite"></ul>
+		</aside>
+
+		<!-- Hidden Audio -->
+		<audio id="audio" preload="metadata"></audio>
+	</div>
+
+	<script src="scripts.js"></script>
+</body>
 </html>

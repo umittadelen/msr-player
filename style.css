@@ -70,6 +70,24 @@ body {
 	overflow: hidden;
 }
 
+
+.is-loading {
+	filter: blur(6px);
+	opacity: 0.7;
+	pointer-events: none;
+	transition: filter 0.2s ease, opacity 0.2s ease;
+}
+
+.player-container,
+.controls-section,
+.lyrics-panel,
+.title,
+.subtitle,
+.time-display,
+.lyrics-list {
+	transition: filter 0.2s ease, opacity 0.2s ease;
+}
+
 @media (min-width: 900px) {
 	.app {
 		grid-template-columns: 1fr 380px;
@@ -169,16 +187,29 @@ body {
 /* ============================================
    Vinyl / Artwork
    ============================================ */
+img {
+	user-select: none;
+	-webkit-user-drag: none;
+	-moz-user-drag: none;
+	-ms-user-drag: none;
+}
+
 .artwork-section {
 	width: 100%;
-	max-width: 200px;
+	max-width: clamp(200px, 22vw, 360px);
 	aspect-ratio: 1;
 	flex-shrink: 0;
 }
 
 @media (min-width: 900px) {
 	.artwork-section {
-		max-width: 240px;
+		max-width: clamp(240px, 20vw, 420px);
+	}
+}
+
+@media (min-width: 1400px) {
+	.artwork-section {
+		max-width: clamp(280px, 18vw, 520px);
 	}
 }
 

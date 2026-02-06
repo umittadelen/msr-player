@@ -1,9 +1,10 @@
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = `${window.location.origin}/api`;
 
 // ============================================
 // DOM Elements
 // ============================================
 const elements = {
+	app: document.querySelector(".app"),
 	audio: document.getElementById("audio"),
 	title: document.querySelector(".title"),
 	subtitle: document.querySelector(".subtitle"),
@@ -39,6 +40,11 @@ function formatTime(seconds) {
 	return `${mins}:${secs.toString().padStart(2, "0")}`;
 }
 
+function setElementLoading(element, loading) {
+	if (!element) return;
+	element.classList.toggle("is-loading", loading);
+}
+
 async function fetchJson(url) {
 	const response = await fetch(url);
 	if (!response.ok) throw new Error(`Request failed: ${response.status}`);
@@ -68,7 +74,10 @@ function parseLrc(text) {
 
 	for (const line of lines) {
 		const tags = [...line.matchAll(timeTag)];
-		const lyricText = line.replace(timeTag, "").trim();
+		const lyricText = line
+			.replace(timeTag, "")
+			.replace(/[’‘]/g, "'")
+			.trim();
 		if (!tags.length || !lyricText) continue;
 
 		for (const tag of tags) {
@@ -95,6 +104,17 @@ function renderLyrics(lyrics) {
 		li.className = "lyrics-line";
 		li.dataset.time = line.time;
 		li.textContent = line.text;
+		elements.lyricsList.appendChild(li);
+	}
+}
+
+function renderLyricsLoading() {
+	elements.lyricsList.innerHTML = "";
+	const placeholders = ["Loading lyrics...", "", ""];
+	for (const text of placeholders) {
+		const li = document.createElement("li");
+		li.className = "lyrics-line";
+		li.textContent = text;
 		elements.lyricsList.appendChild(li);
 	}
 }
@@ -131,6 +151,10 @@ function setDuration(seconds) {
 	duration = seconds;
 	if (elements.totalTime) {
 		elements.totalTime.textContent = formatTime(seconds);
+	}
+	if (seconds && isFinite(seconds)) {
+		setElementLoading(elements.totalTime, false);
+		setElementLoading(elements.currentTime, false);
 	}
 	if (elements.progressSlider) {
 		elements.progressSlider.max = seconds;
@@ -191,18 +215,27 @@ function setVolume(value) {
 	elements.audio.volume = Math.max(0, Math.min(1, value / 100));
 }
 
+function setLoading(loading) {
+	isLoading = loading;
+}
+
 // ============================================
 // Song Loading
 // ============================================
 async function loadSong(cid) {
 	// Reset state
-	isLoading = true;
+	setLoading(true);
 	currentLyrics = [];
 	duration = 0;
 	setDuration(0);
+	setElementLoading(elements.title, true);
+	setElementLoading(elements.subtitle, true);
+	setElementLoading(elements.currentTime, true);
+	setElementLoading(elements.totalTime, true);
+	setElementLoading(elements.lyricsList, true);
 	elements.title.textContent = "Loading...";
-	elements.subtitle.textContent = "";
-	renderLyrics([]);
+	elements.subtitle.textContent = "Fetching song details";
+	renderLyricsLoading();
 	
 	// Stop current playback
 	elements.audio.pause();
@@ -215,6 +248,8 @@ async function loadSong(cid) {
 		// Update UI immediately
 		elements.title.textContent = song.name;
 		elements.subtitle.textContent = song.artists.join(", ");
+		setElementLoading(elements.title, false);
+		setElementLoading(elements.subtitle, false);
 
 		// Load audio
 		const audioUrl = getProxyUrl("audio", song.sourceUrl);
@@ -246,19 +281,28 @@ async function loadSong(cid) {
 					.then(text => {
 						currentLyrics = parseLrc(text);
 						renderLyrics(currentLyrics);
+						setElementLoading(elements.lyricsList, false);
 					})
-					.catch(() => renderLyrics([]))
+					.catch(() => {
+						renderLyrics([]);
+						setElementLoading(elements.lyricsList, false);
+					})
 			);
+		} else {
+			renderLyrics([]);
+			setElementLoading(elements.lyricsList, false);
 		}
 
 		await Promise.all(promises);
-		isLoading = false;
-
 	} catch (error) {
 		console.error("Failed to load song:", error);
 		elements.title.textContent = "Failed to load";
 		elements.subtitle.textContent = "Try another song";
-		isLoading = false;
+		setElementLoading(elements.title, false);
+		setElementLoading(elements.subtitle, false);
+		setElementLoading(elements.lyricsList, false);
+	} finally {
+		setLoading(false);
 	}
 }
 

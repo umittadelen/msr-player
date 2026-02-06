@@ -1,12 +1,23 @@
-from flask import Flask, jsonify, request, Response
+from flask import Flask, jsonify, request, Response, send_from_directory
 from flask_cors import CORS
 import requests
 import urllib3
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder=".", static_url_path="")
 CORS(app)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 API_BASE = "https://monster-siren.hypergryph.com/api"
+
+
+@app.route("/")
+def serve_index():
+    return send_from_directory(app.static_folder, "index.html")
+
+
+@app.route("/list")
+@app.route("/list.html")
+def serve_list():
+    return send_from_directory(app.static_folder, "list.html")
 
 @app.route("/api/songs", methods=["GET"])
 def get_songs():

@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = `${window.location.origin}/api`;
 
 const albumGrid = document.getElementById("albumGrid");
 const albumDetail = document.getElementById("albumDetail");
@@ -129,7 +129,7 @@ function renderAlbumDetail(album) {
 	(album.songs || []).forEach((song) => {
 		const card = document.createElement("a");
 		card.className = "song-card";
-		card.href = `/index.html#/${song.cid}`;
+		card.href = `/list.html#/${song.cid}`;
 		card.innerHTML = `
 			<img class="song-cover" data-src="${coverUrl}" alt="Song cover" loading="lazy" />
 			<div class="song-info">
